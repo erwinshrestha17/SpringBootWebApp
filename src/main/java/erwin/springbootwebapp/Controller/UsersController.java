@@ -4,8 +4,8 @@ import erwin.springbootwebapp.Entity.Posts;
 import erwin.springbootwebapp.Entity.Users;
 import erwin.springbootwebapp.Exception.UserNotFoundException;
 import erwin.springbootwebapp.Repository.PostsRepository;
+import erwin.springbootwebapp.Repository.UsersRepository;
 import erwin.springbootwebapp.Service.UsersService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,16 +18,22 @@ import java.util.Optional;
 public class UsersController {
     private final UsersService usersService;
     private final PostsRepository postsRepository;
+    private final UsersRepository usersRepository;
 
     @Autowired
-    public UsersController(UsersService usersService, PostsRepository postsRepository) {
+    public UsersController(UsersService usersService, PostsRepository postsRepository, UsersRepository usersRepository) {
         this.usersService = usersService;
         this.postsRepository = postsRepository;
+        this.usersRepository = usersRepository;
     }
     @PostMapping
-    public ResponseEntity<String> save(@Valid @RequestBody Users users) {
-        usersService.save(users);
-        return new  ResponseEntity<>("Saved",HttpStatus.CREATED);
+    public ResponseEntity<String> save(@RequestBody Users users) {
+        if (usersRepository.existsByEmail(users.getEmail())){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }else {
+            usersService.save(users);
+            return new ResponseEntity<>( HttpStatus.CREATED);
+        }
     }
     @GetMapping
     public ResponseEntity<List<Users>> getAll() {
@@ -45,11 +51,21 @@ public class UsersController {
         Optional<Users> users=usersService.findById(id);
         if(users.isPresent()) {
             usersService.deleteById(id);
-            return new ResponseEntity<>("Deleted",HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         }else {
-            return new ResponseEntity<>("Not Found",HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updateById(@PathVariable Long id, @RequestBody Users users) {
+        Optional<Users> user = usersService.findById(id);
+        if (user.isPresent()) {
+            usersService.save(users);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
     @GetMapping("/{id}/posts")
     public ResponseEntity<?> GetUserPostsById(@PathVariable Long id) {
         Optional<Users> users = usersService.findById(id);
@@ -73,7 +89,7 @@ public class UsersController {
         }
         posts.setUsers(users.get());
         postsRepository.save(posts);
-        return new ResponseEntity<>("Saved",HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
 

@@ -21,6 +21,8 @@ public class Users {
     @Column(nullable = false)
     @Size(min = 5, max = 50)
     private String name;
+    private String email;
+    private String password;
     @Column(nullable = false)
     @Past
     private LocalDate dateOfBirth;

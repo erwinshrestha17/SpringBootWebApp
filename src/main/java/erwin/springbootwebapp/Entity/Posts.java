@@ -15,7 +15,7 @@ public class Posts {
     @Column(nullable = false)
     private int id;
     @Column(nullable = false)
-    @Size(min = 10, max = 30)
+    //@Size(min = 10, max = 30)
     private String title;
     @Column(nullable = false)
     private String description;

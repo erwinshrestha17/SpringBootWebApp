@@ -15,6 +15,8 @@ public class UsersService {
     public UsersService(UsersRepository usersRepository) {
         this.usersRepository = usersRepository;
     }
+
+
     public void save(Users users) {usersRepository.save(users);}
     public void deleteById(Long id) {usersRepository.deleteById(id);}
     public List<Users> findAll() {return usersRepository.findAll();}

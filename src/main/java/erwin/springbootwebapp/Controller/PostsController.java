@@ -21,7 +21,7 @@ public class PostsController {
     @PostMapping
     public ResponseEntity<String> save(@RequestBody Posts posts) {
         postService.save(posts);
-        return new ResponseEntity<>("Saved", HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
     @GetMapping
     public ResponseEntity<List<Posts>> getAll() {
@@ -38,9 +38,9 @@ public class PostsController {
         Optional<Posts> posts=postService.findById(id);
         if(posts.isPresent()) {
             postService.deleteById(id);
-            return new ResponseEntity<>("Deleted", HttpStatus.OK);
+            return new ResponseEntity<>( HttpStatus.OK);
         }else {
-            return new ResponseEntity<>("Not Found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 }

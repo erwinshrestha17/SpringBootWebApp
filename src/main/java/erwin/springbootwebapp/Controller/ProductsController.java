@@ -22,8 +22,10 @@ public class ProductsController {
 
     @PostMapping
     public ResponseEntity<String> save(@RequestBody Products products) {
+
+
         productsService.save(products);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Product created successfully");
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping
@@ -42,10 +44,10 @@ public class ProductsController {
     public ResponseEntity<String> deleteById(@PathVariable int id) {
         Optional<Products> product = productsService.findById(id);
         if (product.isPresent()) {
-            productsService.deleteById((long) id); // No need for casting
-            return ResponseEntity.ok("Product deleted successfully");
+            productsService.deleteById((long) id);
+            return new ResponseEntity<>( HttpStatus.OK);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found");
+            return new ResponseEntity<>( HttpStatus.NOT_FOUND);
         }
     }
 }
